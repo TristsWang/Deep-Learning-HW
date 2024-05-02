@@ -2,7 +2,14 @@ from encodings import normalize_encoding
 from torchvision import datasets
 import numpy as np 
 import struct
-
+import os  
+  
+def data_folder_exists():  
+    data_folder = './data/'  
+    if os.path.exists(data_folder) and os.path.isdir(data_folder):  
+        return True  
+    else:  
+        return False  
 
 def download_data():
     train = datasets.FashionMNIST('./data', train=True, download=True)
@@ -18,8 +25,8 @@ def read_datafile(image_path, label_path):
     return image_data, label_data 
 
 def load_data():
-    import os
-    print(os.getcwd())
+    if not data_folder_exists():
+        download_data()
     path = './data/FashionMNIST/raw/'
     X_train, Y_train = read_datafile(path + 'train-images-idx3-ubyte', path + 'train-labels-idx1-ubyte')
     X_test, Y_test = read_datafile(path + 't10k-images-idx3-ubyte', path + 't10k-labels-idx1-ubyte')
@@ -56,3 +63,6 @@ def one_hot(labels):
 
 def normalize(X):
     return 2 * (X / 255 - 0.5)
+
+if __name__ =="__main__":
+    load_data()
